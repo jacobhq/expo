@@ -46,14 +46,7 @@ public class UpdateDirective: NSObject {
       guard let commitTime = RCTConvert.nsDate(commitTimeString) else {
         throw RemoteUpdateError.directiveParsingError
       }
-      // If this rollback was committed before the currently running update
-      // or embedded bundle, then it is not valid, and we return the "noUpdateAvailable"
-      // directive
-      let commitTimeRunning = AppController.sharedInstance.launchedUpdate()?.commitTime ?? Date(timeIntervalSince1970: 0)
-      let rollbackValid = commitTime.compare(commitTimeRunning) == ComparisonResult.orderedDescending
-      return rollbackValid ?
-        RollBackToEmbeddedUpdateDirective(commitTime: commitTime, signingInfo: signingInfo) :
-        NoUpdateAvailableUpdateDirective(signingInfo: signingInfo)
+      return RollBackToEmbeddedUpdateDirective(commitTime: commitTime, signingInfo: signingInfo)
     default:
       throw RemoteUpdateError.invalidDirectiveType
     }
